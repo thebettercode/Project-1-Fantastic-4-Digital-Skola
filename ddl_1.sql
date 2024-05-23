@@ -1,3 +1,4 @@
+
 --Tugas melengkapi script ddl_1.sql berdasarkan ERD
         CREATE TABLE IF NOT EXISTS dim_users (
             user_id INT NOT NULL PRIMARY KEY,
@@ -32,17 +33,17 @@
         );
 --		Tugas melengkapi dim_products & dim_product_category
 		CREATE TABLE IF NOT EXISTS dim_products(
-			product_id INT NOT NULL,
+			product_id INT NOT NULL PRIMARY KEY,
 			product_category_id INT NOT NULL,
 			product_name VARCHAR(255) NOT NULL,
 			product_created DATE NOT NULL,
 			product_price INT NOT NULL,
-			product_discount INT,			
+			product_discount INT,
 			FOREIGN KEY (product_category_id) REFERENCES dim_product_category(product_category_id)
 		);
 		CREATE TABLE IF NOT EXISTS dim_product_category(
-			product_category_id INT NOT NULL,
-			product_category_name VARCHAR(255) NOT NULL
+			product_category_id INT NOT NULL PRIMARY KEY,
+			product_category_name VARCHAR(255) NOT NULL			
 		);
        
        
@@ -57,7 +58,7 @@
             voucher_id INT,
             order_total INT NOT NULL,
             rating_id INT NOT NULL,
-            FOREIGN KEY (user_id) REFERENCES dim_user(user_id),
+            FOREIGN KEY (user_id) REFERENCES dim_users(user_id),
             FOREIGN KEY (payment_id) REFERENCES dim_payment(payment_id),
             FOREIGN KEY (shipper_id) REFERENCES dim_shipper(shipper_id),
             FOREIGN KEY (voucher_id) REFERENCES dim_voucher(voucher_id),
@@ -72,7 +73,7 @@
        		product_discount INT,
        		product_subdiscount INT,
        		product_price INT NOT NULL,
-       		product_subprice INT NOT NULL
+       		product_subprice INT NOT NULL,
        		FOREIGN KEY (order_id) REFERENCES fact_orders(order_id),
        		FOREIGN KEY (product_id) REFERENCES dim_products(product_id)      
        );
