@@ -1,5 +1,5 @@
 --Tugas melengkapi script ddl_1.sql berdasarkan ERD
-        CREATE TABLE IF NOT EXISTS dim_user (
+        CREATE TABLE IF NOT EXISTS dim_users (
             user_id INT NOT NULL PRIMARY KEY,
             user_first_name VARCHAR(255) NOT NULL,
             user_last_name VARCHAR(255) NOT NULL,
