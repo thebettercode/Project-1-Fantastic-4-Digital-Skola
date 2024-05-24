@@ -11,4 +11,3 @@ PIC TBD
    Dan melengkapi  dan running script etl.py utk datamart (Referensi Nomor 10 & Video 1:52:16)
 PIC TBD
 4 Desain dashboard di looker studio (Referensi Requirement Business Needs)
- https://lookerstudio.google.com/reporting/68178750-7502-4d05-8425-76a1b7c5d3fd
