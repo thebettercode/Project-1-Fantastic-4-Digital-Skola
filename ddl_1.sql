@@ -1,6 +1,6 @@
 
 --Tugas melengkapi script ddl_1.sql berdasarkan ERD
-        CREATE TABLE IF NOT EXISTS dim_user (
+        CREATE TABLE IF NOT EXISTS dim_users (
             user_id INT NOT NULL PRIMARY KEY,
             user_first_name VARCHAR(255) NOT NULL,
             user_last_name VARCHAR(255) NOT NULL,
@@ -9,16 +9,16 @@
             user_birthday DATE NOT NULL,
             user_join DATE NOT NULL
         );
-        CREATE TABLE IF NOT EXISTS dim_payment (
+        CREATE TABLE IF NOT EXISTS dim_payments (
             payment_id INT NOT NULL PRIMARY KEY,
             payment_name VARCHAR(255) NOT NULL,
             payment_status BOOLEAN NOT NULL
         );
-        CREATE TABLE IF NOT EXISTS dim_shipper (
+        CREATE TABLE IF NOT EXISTS dim_shippers (
             shipper_id INT NOT NULL PRIMARY KEY,
             shipper_name VARCHAR(255) NOT NULL
         );
-        CREATE TABLE IF NOT EXISTS dim_rating (
+        CREATE TABLE IF NOT EXISTS dim_ratings (
             rating_id INT NOT NULL PRIMARY KEY,
             rating_level INT NOT NULL,
             rating_status VARCHAR(255) NOT NULL
@@ -29,7 +29,7 @@
             voucher_price INT,
             voucher_created DATE NOT NULL,
             user_id INT NOT NULL,
-            FOREIGN KEY (user_id) REFERENCES dim_user(user_id)
+            FOREIGN KEY (user_id) REFERENCES dim_users(user_id)
         );
 --		Tugas melengkapi dim_products & dim_product_category
 		CREATE TABLE IF NOT EXISTS dim_products(
@@ -58,11 +58,11 @@
             voucher_id INT,
             order_total INT NOT NULL,
             rating_id INT NOT NULL,
-            FOREIGN KEY (user_id) REFERENCES dim_user(user_id),
-            FOREIGN KEY (payment_id) REFERENCES dim_payment(payment_id),
-            FOREIGN KEY (shipper_id) REFERENCES dim_shipper(shipper_id),
+            FOREIGN KEY (user_id) REFERENCES dim_users(user_id),
+            FOREIGN KEY (payment_id) REFERENCES dim_payments(payment_id),
+            FOREIGN KEY (shipper_id) REFERENCES dim_shippers(shipper_id),
             FOREIGN KEY (voucher_id) REFERENCES dim_voucher(voucher_id),
-            FOREIGN KEY (rating_id) REFERENCES dim_rating(rating_id)
+            FOREIGN KEY (rating_id) REFERENCES dim_ratings(rating_id)
         );
 --		Tugas melengkapi fact_order_items
        	CREATE TABLE IF NOT EXISTS fact_order_items (
