@@ -1,6 +1,6 @@
 
 --Tugas melengkapi script ddl_1.sql berdasarkan ERD
-        CREATE TABLE IF NOT EXISTS dim_users (
+        CREATE TABLE IF NOT EXISTS dim_user (
             user_id INT NOT NULL PRIMARY KEY,
             user_first_name VARCHAR(255) NOT NULL,
             user_last_name VARCHAR(255) NOT NULL,
@@ -29,7 +29,7 @@
             voucher_price INT,
             voucher_created DATE NOT NULL,
             user_id INT NOT NULL,
-            FOREIGN KEY (user_id) REFERENCES dim_users(user_id)
+            FOREIGN KEY (user_id) REFERENCES dim_user(user_id)
         );
 --		Tugas melengkapi dim_products & dim_product_category
 		CREATE TABLE IF NOT EXISTS dim_products(
@@ -58,7 +58,7 @@
             voucher_id INT,
             order_total INT NOT NULL,
             rating_id INT NOT NULL,
-            FOREIGN KEY (user_id) REFERENCES dim_users(user_id),
+            FOREIGN KEY (user_id) REFERENCES dim_user(user_id),
             FOREIGN KEY (payment_id) REFERENCES dim_payment(payment_id),
             FOREIGN KEY (shipper_id) REFERENCES dim_shipper(shipper_id),
             FOREIGN KEY (voucher_id) REFERENCES dim_voucher(voucher_id),
