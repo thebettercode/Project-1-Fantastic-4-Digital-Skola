@@ -137,19 +137,13 @@ ddl_statements = {
 ddl_marts = {
     "dim_sales": """
         CREATE TABLE IF NOT EXISTS dm_sales (
-            order_item_id INT NOT NULL PRIMARY KEY,
-            order_id INT NOT NULL,
+            order_id INT NOT NULL PRIMARY KEY,
             order_date DATE NOT NULL,
+            month_year DATE NOT NULL,
             user_id INT NOT NULL,
             user_name VARCHAR(255),
-            user_address VARCHAR(255),
-            product_id INT NOT NULL,
-            product_name VARCHAR(255) NOT NULL,
-            product_price INT NOT NULL,
-            product_discount INT,
-            product_margin INT,
-            product_category_id INT NOT NULL,
-            product_category_name VARCHAR(255) NOT NULL,
+            user_gender VARCHAR(255),
+            user_address VARCHAR(255), 
             payment_type VARCHAR(255),
             shipper_name VARCHAR(255),
             order_price INT NOT NULL,
@@ -157,29 +151,32 @@ ddl_marts = {
             voucher_name VARCHAR(255),
             order_total INT NOT NULL,
             FOREIGN KEY (order_id) REFERENCES fact_orders(order_id),
-            FOREIGN KEY (user_id) REFERENCES dim_user(user_id),
-            FOREIGN KEY (product_id) REFERENCES dim_product(product_id),
-            FOREIGN KEY (product_category_id) REFERENCES dim_product_category(product_category_id)
+            FOREIGN KEY (user_id) REFERENCES dim_user(user_id)
         );
     """,
-    "insert_dm_sales": """
-        TRUNCATE TABLE dm_sales; 
-        INSERT INTO dm_sales (order_item_id, order_id, order_date, user_id, user_name, user_address, product_id, product_name,
-                                product_price, product_discount, product_margin, product_category_id, 
-                                product_category_name, payment_type, shipper_name, 
-                              order_price, order_discount, voucher_name, order_total)
-        SELECT foi.order_item_id, fo.order_id, fo.order_date, fo.user_id, du.user_first_name || ' ' || du.user_last_name,
-                du.user_address, dpr.product_id, dpr.product_name, dpr.product_price, dpr.product_discount,
-                dpr.product_price-dpr.product_discount, dpr.product_category_id, dpc.product_category_name,
-               dp.payment_name, ds.shipper_name, fo.order_price, fo.order_discount, 
-               dv.voucher_name, fo.order_total
+    "dim_product_sales": """
+        CREATE TABLE IF NOT EXISTS dm_product (
+            order_item_id INT NOT NULL PRIMARY KEY,
+            order_id INT NOT NULL,
+            product_name VARCHAR(255) NOT NULL,
+            product_category_name VARCHAR(255) NOT NULL,
+            order_item_quantity INT,
+            product_discount INT,
+            product_subdiscount INT,
+            product_price INT NOT NULL,
+            margin_laba INT,
+            FOREIGN KEY (order_item_id) REFERENCES fact_order_items(order_item_id),
+            FOREIGN KEY (order_id) REFERENCES fact_orders(order_id)
+        );
+    """,
+    "insert_dm_product": """
+        TRUNCATE TABLE dm_product; 
+        INSERT INTO dm_sales (order_item_id, order_id, product_name, product_category_name, order_item_quantity, product_discount, product_subdiscount, 
+                              product_price, margin_laba)
+        SELECT foi.order_item_id, foi.order_id, dp.product_name, dpc.product_category_name , foi.order_item_quantity, foi.product_discount,
+                foi.product_subdiscount, foi.product_price, foi.product_subprice, (foi.product_subprice - foi.product_discount)
         FROM fact_order_items foi
-        LEFT JOIN fact_orders fo ON foi.order_id = fo.order_id
-        INNER JOIN dim_user du ON fo.user_id = du.user_id
-        INNER JOIN dim_payment dp ON fo.payment_id = dp.payment_id
-        INNER JOIN dim_shipper ds ON fo.shipper_id = ds.shipper_id
-        LEFT JOIN dim_voucher dv ON fo.voucher_id = dv.voucher_id
-        INNER JOIN dim_product dpr ON foi.product_id = dpr.product_id
-        INNER JOIN dim_product_category dpc ON dpr.product_category_id = dpc.product_category_id;
+        INNER JOIN dim_product dp ON foi.product_id  = dp.product_id
+        INNER JOIN dim_product_category dpc ON dp.product_category_id  = dpc.product_category_id ;
     """
 }
