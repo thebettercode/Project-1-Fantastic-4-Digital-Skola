@@ -169,9 +169,23 @@ ddl_marts = {
             FOREIGN KEY (order_id) REFERENCES fact_orders(order_id)
         );
     """,
+    "insert_dm_sales": """
+        TRUNCATE TABLE dm_sales; 
+        INSERT INTO dm_sales (order_id, order_date, month_year, user_id, user_name, user_gender, user_address, payment_type, shipper_name, 
+                              order_price, order_discount, voucher_name, order_total)
+        SELECT fo.order_id, fo.order_date, (DATE_TRUNC('month', order_date) + INTERVAL '1 month' - INTERVAL '1 day')::DATE,
+                fo.user_id, du.user_first_name || ' ' || du.user_last_name, du.user_gender, du.user_address,
+               dp.payment_name, ds.shipper_name, fo.order_price, fo.order_discount, 
+               dv.voucher_name, fo.order_total
+        FROM fact_orders fo
+        INNER JOIN dim_user du ON fo.user_id = du.user_id
+        INNER JOIN dim_payment dp ON fo.payment_id = dp.payment_id
+        INNER JOIN dim_shipper ds ON fo.shipper_id = ds.shipper_id
+        LEFT JOIN dim_voucher dv ON fo.voucher_id = dv.voucher_id;
+    """
     "insert_dm_product": """
         TRUNCATE TABLE dm_product; 
-        INSERT INTO dm_sales (order_item_id, order_id, product_name, product_category_name, order_item_quantity, product_discount, product_subdiscount, 
+        INSERT INTO dm_product (order_item_id, order_id, product_name, product_category_name, order_item_quantity, product_discount, product_subdiscount, 
                               product_price, margin_laba)
         SELECT foi.order_item_id, foi.order_id, dp.product_name, dpc.product_category_name , foi.order_item_quantity, foi.product_discount,
                 foi.product_subdiscount, foi.product_price, foi.product_subprice, (foi.product_subprice - foi.product_discount)
